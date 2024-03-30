@@ -1,0 +1,70 @@
+## Constants
+# ...To be completed...
+
+## System data
+    .kdata
+panic:  .asciz  "Unhandled exception\n"
+    .align 2
+uregs:  # ...To be completed...
+
+## System code
+    .ktext
+### Boot code
+    .globl __mstart
+__mstart:
+    la      t0, __mtrap
+    csrw    mtvec, t0
+
+    la      t0, __user_bootstrap
+    csrw    mepc, t0
+
+    la      t0, uregs
+    csrw    mscratch, t0
+
+    mret    # Enter user bootstrap
+
+### Trap handler
+__mtrap:
+# 1. Prologue: save registers
+    # ...To be completed...
+
+# 2. First check that it's an exception we can handle
+    # Check exception code
+    # ...To be completed...
+
+    # Get faulty instruction
+    # ...To be completed...
+
+    # Check that it's a load (opcode == 0b0000011)
+    # ...To be completed...
+
+    # Check that it's a load word (funct3 == 0b010)
+    # ...To be completed...
+
+# 3. At this point, we know it's a load word with a misalign address. Now
+#    retrieve 4 consecutive bytes from unaligned memory address, and
+#    reconstitute full word.
+    # ...To be completed...
+
+# 4. Now place the value into destination register
+    # Determine destination register rd from instruction
+    # ...To be completed...
+
+    # Modify uregs[rd]
+    # ...To be completed...
+
+# 5. Return to next instruction
+    # ...To be completed...
+
+# 6. Epilogue: Restore registers and return
+    # ...To be completed...
+
+
+## User boot code
+    .text
+__user_bootstrap:
+    # exit(main())
+    jal     main
+    li      a7, EXIT
+    ecall
+
